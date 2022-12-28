@@ -7,10 +7,6 @@ on:
 jobs:
   coverage:
     name: Run tests and generate coverage report
-    permissions:
-      checks: write
-      pull-requests: write
-      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
