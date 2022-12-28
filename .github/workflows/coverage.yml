@@ -6,13 +6,15 @@ on:
       - main
 jobs:
   coverage:
+    name: Run tests and generate coverage report
     permissions:
       checks: write
       pull-requests: write
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout branch
+        uses: actions/checkout@v3
 
       - name: Find pr number
         uses: jwalton/gh-find-current-pr@v1
@@ -23,13 +25,15 @@ jobs:
         with:
           version: 7
 
-      - uses: ArtiomTr/jest-coverage-report-action@v2
+      - name: Generate report
+        uses: ArtiomTr/jest-coverage-report-action@v2
         id: coverage
         with:
           output: report-markdown
           package-manager: pnpm
           prnumber: ${{ steps.find-pr-number.outputs.number }}
 
-      - uses: marocchino/sticky-pull-request-comment@v2
+      - name: Add a comment on pull request
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
           message: ${{ steps.coverage.outputs.report }}
