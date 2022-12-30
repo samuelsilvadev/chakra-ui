@@ -1,0 +1,35 @@
+name: Coverage
+
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  coverage:
+    name: Run tests and generate coverage report
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+
+      - name: Find pr number
+        uses: jwalton/gh-find-current-pr@v1
+        id: find-pr-number
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7
+
+      - name: Generate report
+        uses: ArtiomTr/jest-coverage-report-action@v2
+        id: coverage
+        with:
+          output: report-markdown
+          package-manager: pnpm
+          prnumber: ${{ steps.find-pr-number.outputs.number }}
+
+      - name: Add a comment on pull request
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          message: ${{ steps.coverage.outputs.report }}
